@@ -3,45 +3,49 @@ package com.github.vladkorobovdev.fridgemate
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.github.vladkorobovdev.fridgemate.ui.theme.FridgeMateTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.github.vladkorobovdev.fridgemate.data.FridgeDatabase
+import com.github.vladkorobovdev.fridgemate.ui.AddProductScreen
+import com.github.vladkorobovdev.fridgemate.ui.ProductListScreen
+import com.github.vladkorobovdev.fridgemate.viewmodel.FridgeViewModel
+import com.github.vladkorobovdev.fridgemate.viewmodel.FridgeViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val database = FridgeDatabase.getDatabase(this)
+
         setContent {
-            FridgeMateTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            val viewModel: FridgeViewModel = viewModel(
+                factory = FridgeViewModelFactory(database.productDao())
+            )
+
+            FridgeAppNavigation(viewModel)
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun FridgeAppNavigation(viewModel: FridgeViewModel) {
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FridgeMateTheme {
-        Greeting("Android")
+    NavHost(navController = navController, startDestination = "list") {
+        composable("list") {
+            ProductListScreen(
+                viewModel = viewModel,
+                onNavigateToAdd = { navController.navigate("add") }
+            )
+        }
+        composable("add") {
+            AddProductScreen(
+                viewModel = viewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
     }
 }

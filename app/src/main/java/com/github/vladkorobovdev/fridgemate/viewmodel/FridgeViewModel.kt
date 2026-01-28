@@ -1,4 +1,4 @@
-package com.github.vladkorobovdev.fridgemate.viemodel
+package com.github.vladkorobovdev.fridgemate.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
