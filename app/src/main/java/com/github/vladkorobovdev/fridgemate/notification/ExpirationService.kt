@@ -2,6 +2,8 @@ package com.github.vladkorobovdev.fridgemate.notification
 
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
 import com.github.vladkorobovdev.fridgemate.data.FridgeDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +16,7 @@ class ExpirationService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startForegroundServiceCompact()
         val scope = CoroutineScope(Dispatchers.IO)
 
         scope.launch {
@@ -22,6 +25,16 @@ class ExpirationService : Service() {
         }
 
         return START_NOT_STICKY
+    }
+
+    private fun startForegroundServiceCompact() {
+        val notification = NotificationHelper.createRunningNotification(this)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            startForeground(1, notification)
+        }
     }
 
     private suspend fun checkExpirationDate() {

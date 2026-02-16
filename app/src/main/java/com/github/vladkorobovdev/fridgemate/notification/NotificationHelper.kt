@@ -1,5 +1,6 @@
 package com.github.vladkorobovdev.fridgemate.notification
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -34,6 +35,22 @@ object NotificationHelper {
 
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        manager.notify(1, builder.build())
+        manager.notify(2, builder.build())
+    }
+
+    fun createRunningNotification(context: Context): Notification {
+        return createBaseBuilder(context, "FridgeMate", "Checking expiration dates...")
+            .setOngoing(true)
+            .setSilent(true)
+            .build()
+    }
+
+    private fun createBaseBuilder(context: Context, title: String, message: String): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
     }
 }

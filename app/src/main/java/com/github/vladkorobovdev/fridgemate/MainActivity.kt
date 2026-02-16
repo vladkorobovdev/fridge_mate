@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
             timeInMillis = System.currentTimeMillis()
             set(Calendar.HOUR_OF_DAY, 9)
             set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
         }
 
         if (calendar.timeInMillis <= System.currentTimeMillis()) {
@@ -88,6 +89,36 @@ class MainActivity : ComponentActivity() {
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
+
+        ///////////////////// TEST
+
+//        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//        val intent = Intent(context, DailyReceiver::class.java)
+//
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            context,
+//            0,
+//            intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//        )
+//
+//        val triggerTime = System.currentTimeMillis() + (15 * 1000)
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            if (alarmManager.canScheduleExactAlarms()) {
+//                alarmManager.setExact(
+//                    AlarmManager.RTC_WAKEUP,
+//                    triggerTime,
+//                    pendingIntent
+//                )
+//            } else {
+//                alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+//            }
+//        } else {
+//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+//        }
+//
+//        println("TEST: Alarm set for 15 seconds from now")
     }
 }
 
